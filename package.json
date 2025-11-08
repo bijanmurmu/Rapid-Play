@@ -1,0 +1,61 @@
+{
+  "name": "rapid-play",
+  "version": "1.0.0",
+  "description": "A modern YouTube playlist analyzer that provides detailed statistics and optimal playback speeds",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "type-check": "tsc --noEmit"
+  },
+  "keywords": [
+    "youtube",
+    "playlist",
+    "analyzer",
+    "statistics",
+    "playback-speed",
+    "nextjs",
+    "react",
+    "typescript"
+  ],
+  "author": "Your Name <your.email@example.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bijanmurmu/rapid-play.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bijanmurmu/rapid-play/issues"
+  },
+  "homepage": "https://github.com/bijanmurmu/rapid-play#readme",
+  "dependencies": {
+    "next": "14.2.3",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "tailwindcss": "^3.4.17",
+    "autoprefixer": "10.4.19",
+    "postcss": "8.4.38",
+    "clsx": "2.1.1",
+    "tailwind-merge": "2.3.0",
+    "lucide-react": "0.408.0",
+    "class-variance-authority": "0.7.0",
+    "@radix-ui/react-slot": "1.2.3-rc.1746560904918",
+    "@radix-ui/react-dialog": "1.1.1",
+    "@radix-ui/react-dropdown-menu": "2.1.1",
+    "tailwindcss-animate": "1.0.7"
+  },
+  "devDependencies": {
+    "typescript": "5.6.2",
+    "@types/node": "20.14.2",
+    "@types/react": "18.3.3",
+    "@types/react-dom": "18.3.0",
+    "eslint": "8.56.0",
+    "eslint-config-next": "14.2.3"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  }
+}
