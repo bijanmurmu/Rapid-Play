@@ -2,7 +2,7 @@
 
 A modern web application that analyzes YouTube playlists to provide detailed statistics including total duration, video count, and optimal playback speeds for efficient viewing.
 
-![Rapid Play Screenshot](https://via.placeholder.com/800x400/181818/FF0000?text=Rapid+Play+YouTube+Playlist+Analyzer)
+![Rapid Play Screenshot](./public/images/screenshot.png)
 
 ## ✨ Features
 
