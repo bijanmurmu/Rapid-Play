@@ -77,8 +77,8 @@ export default function PrivacyPage() {
             <h2 className="text-2xl font-bold text-white mt-8 mb-4">Contact Us</h2>
             <p className="text-zinc-300 mb-4">
               If you have any questions about this Privacy Policy, please contact us at{" "}
-              <a href="mailto:privacy@rapidplay.dev" className="text-red-400 hover:text-red-300">
-                privacy@rapidplay.dev
+              <a href="mailto:bijanmurmu.projects@gmail.com" className="text-red-400 hover:text-red-300">
+                bijanmurmu.projects@gmail.com
               </a>
               .
             </p>

@@ -31,7 +31,7 @@ export default function Footer() {
               About
             </Link>
             <Link
-              href="mailto:contact@rapidplay.dev"
+              href="mailto:bijanmurmu.projects@gmail.com"
               className="text-zinc-400 hover:text-white text-sm transition-colors"
               title="Get help with Rapid Play"
             >

@@ -62,8 +62,8 @@ export default function AboutPage() {
             <h2 className="text-2xl font-bold text-white mt-8 mb-4">Contact Us</h2>
             <p className="text-zinc-300 mb-4">
               Have questions, suggestions, or feedback? We'd love to hear from you! You can reach us at{" "}
-              <a href="mailto:contact@rapidplay.dev" className="text-red-400 hover:text-red-300">
-                contact@rapidplay.dev
+              <a href="mailto:bijanmurmu.projects@gmail.com" className="text-red-400 hover:text-red-300">
+                bijanmurmu.projects@gmail.com
               </a>{" "}
               or visit our{" "}
               <a href="https://github.com/bijanmurmu/Rapid-Play" className="text-red-400 hover:text-red-300">
