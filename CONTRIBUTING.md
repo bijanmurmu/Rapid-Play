@@ -6,19 +6,19 @@ Thank you for your interest in contributing to Rapid Play! This document provide
 
 1. **Fork the repository** on GitHub
 2. **Clone your fork** locally:
-   \`\`\`bash
-   git clone https://github.com/yourusername/rapid-play.git
+   ```bash
+   git clone https://github.com/bijanmurmu/rapid-play.git
    cd rapid-play
-   \`\`\`
+   ```
 3. **Install dependencies**:
-   \`\`\`bash
+   ```bash
    npm install
-   \`\`\`
+   ```
 4. **Set up environment variables** (see README.md)
 5. **Create a new branch** for your feature:
-   \`\`\`bash
+   ```bash
    git checkout -b feature/your-feature-name
-   \`\`\`
+   ```
 
 ## 📋 Development Guidelines
 
@@ -33,10 +33,10 @@ Thank you for your interest in contributing to Rapid Play! This document provide
 ### Commit Messages
 
 Use clear and descriptive commit messages:
-- \`feat: add playlist comparison feature\`
-- \`fix: resolve scrolling issue on mobile\`
-- \`docs: update API setup instructions\`
-- \`style: improve button hover effects\`
+- `feat: add playlist comparison feature`
+- `fix: resolve scrolling issue on mobile`
+- `docs: update API setup instructions`
+- `style: improve button hover effects`
 
 ### Testing
 
@@ -123,10 +123,10 @@ Brief description of changes
 
 Understanding the codebase:
 
-- \`app/\` - Next.js app router pages and API routes
-- \`components/\` - React components
-- \`lib/\` - Utility functions and API logic
-- \`public/\` - Static assets
+- `app/` - Next.js app router pages and API routes
+- `components/` - React components
+- `lib/` - Utility functions and API logic
+- `public/` - Static assets
 
 ## 🔒 Security
 
