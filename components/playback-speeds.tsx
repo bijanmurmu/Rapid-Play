@@ -41,15 +41,21 @@ export default function PlaybackSpeeds({ totalDuration, selectedDuration }: Play
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
-          {PRESET_SPEEDS.map((speed) => (
+          {PRESET_SPEEDS.map((speed) => {
+            const durationInSeconds = activeDuration / speed;
+            return (
             <div
               key={speed}
               className="bg-gradient-to-br from-red-900/20 to-pink-900/20 border border-red-700/50 rounded-lg p-3 text-center shadow-lg hover:shadow-red-500/20 transition-all duration-200"
             >
               <div className="text-zinc-300 text-sm mb-1">{speed}x Speed</div>
-              <div className="text-white font-mono font-bold">{formatTime(activeDuration / speed)}</div>
+              <div className="text-white font-mono font-bold">{formatTime(durationInSeconds)}</div>
+              <div className="text-zinc-500 text-[10px] mt-1">
+                Finishes {new Date(Date.now() + durationInSeconds * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', weekday: 'short' })}
+              </div>
             </div>
-          ))}
+            );
+          })}
         </div>
 
         <div className="space-y-3">
@@ -78,6 +84,9 @@ export default function PlaybackSpeeds({ totalDuration, selectedDuration }: Play
             <div className="bg-gradient-to-br from-red-900/20 to-pink-900/20 border border-red-700/50 rounded-lg p-3 text-center animate-fadeIn">
               <div className="text-zinc-300 text-sm mb-1">At {Number.parseFloat(customSpeed).toFixed(2)}x Speed</div>
               <div className="text-white font-mono font-bold">{formatTime(calculatedCustomTime)}</div>
+              <div className="text-zinc-500 text-[10px] mt-1">
+                Finishes {new Date(Date.now() + calculatedCustomTime * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', weekday: 'short' })}
+              </div>
             </div>
           )}
         </div>

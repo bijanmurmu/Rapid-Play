@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback } from "react"
+import { useState, useCallback, useEffect } from "react"
 import PlaylistForm from "./playlist-form"
 import PlaylistMetadata from "./playlist-metadata"
 import PlaybackSpeeds from "./playback-speeds"
@@ -21,6 +21,15 @@ export default function PlaylistAnalyzer({ onAnalysisStarted, onShowInfo }: Play
   const [error, setError] = useState<string | null>(null)
   const [apiKeyMissing, setApiKeyMissing] = useState(false)
   const [selectedVideoIds, setSelectedVideoIds] = useState<string[]>([])
+  
+  const [recentPlaylists, setRecentPlaylists] = useState<{url: string, title: string}[]>([])
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("rapid_play_recent")
+      if (saved) setRecentPlaylists(JSON.parse(saved))
+    } catch (e) {}
+  }, [])
 
   const handleAnalyzePlaylist = useCallback(
     async (url: string) => {
@@ -62,6 +71,13 @@ export default function PlaylistAnalyzer({ onAnalysisStarted, onShowInfo }: Play
         console.log("Analysis completed successfully")
         setPlaylistData(data)
         setSelectedVideoIds([]) // Reset selection when new analysis starts
+        
+        // Save to recent history
+        setRecentPlaylists(prev => {
+          const newRecent = [{ url, title: data.title }, ...prev.filter(p => p.url !== url)].slice(0, 5)
+          try { localStorage.setItem("rapid_play_recent", JSON.stringify(newRecent)) } catch(e) {}
+          return newRecent
+        })
 
         // Ensure smooth scrolling to results
         setTimeout(() => {
@@ -141,8 +157,39 @@ export default function PlaylistAnalyzer({ onAnalysisStarted, onShowInfo }: Play
   }
 
   return (
-    <div className="w-full max-w-3xl">
+    <div className="w-full max-w-3xl relative">
+      {playlistData && playlistData.videos.length > 0 && playlistData.videos[0].thumbnails.high?.url && (
+        <div className="fixed inset-0 z-[-10] overflow-hidden pointer-events-none">
+          <div 
+            className="absolute inset-[-100px] transition-opacity duration-1000 opacity-10"
+            style={{
+              backgroundImage: `url(${playlistData.videos[0].thumbnails.high.url})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              filter: 'blur(80px)'
+            }}
+          />
+        </div>
+      )}
+
       <PlaylistForm onSubmit={handleAnalyzePlaylist} isLoading={isLoading} />
+
+      {!playlistData && recentPlaylists.length > 0 && (
+        <div className="mt-8 space-y-3 animate-fadeIn">
+          <h3 className="text-sm font-medium text-zinc-400 px-1">Recent Playlists</h3>
+          <div className="flex flex-wrap gap-2">
+            {recentPlaylists.map((rp, i) => (
+              <button 
+                key={i}
+                onClick={() => handleAnalyzePlaylist(rp.url)}
+                className="text-xs bg-zinc-800/80 hover:bg-zinc-700 hover:text-white text-zinc-300 border border-zinc-700 px-3 py-1.5 rounded-full transition-colors flex items-center max-w-[200px]"
+              >
+                <span className="truncate">{rp.title}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {getErrorComponent()}
 
