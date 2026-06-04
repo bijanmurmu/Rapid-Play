@@ -9,9 +9,9 @@ interface LayoutProps {
 
 export default function Layout({ children, className = "" }: LayoutProps) {
   return (
-    <div className={`min-h-screen w-full bg-gradient-to-b from-zinc-900 to-black via-zinc-900/90 ${className}`}>
+    <div className={`min-h-screen w-full bg-[#050505] text-white ${className}`}>
       <Header />
-      <main className="pt-24 pb-12 px-4 sm:px-6 relative z-10 min-h-[calc(100vh-6rem)]">{children}</main>
+      <main className="pt-24 pb-12 relative z-10 min-h-[calc(100vh-6rem)]">{children}</main>
       <Footer />
     </div>
   )

@@ -7,7 +7,7 @@ import PlaybackSpeeds from "./playback-speeds"
 import ApiKeyNotice from "./api-key-notice"
 import { VideoSelector } from "./video-selector"
 import { SelectedVideosStats } from "./selected-videos-stats"
-import type { PlaylistData, VideoDetails } from "@/lib/youtube-api"
+import type { PlaylistData } from "@/lib/youtube-api"
 import { parseDuration } from "@/lib/youtube-api"
 
 interface PlaylistAnalyzerProps {
@@ -21,8 +21,7 @@ export default function PlaylistAnalyzer({ onAnalysisStarted, onShowInfo }: Play
   const [error, setError] = useState<string | null>(null)
   const [apiKeyMissing, setApiKeyMissing] = useState(false)
   const [selectedVideoIds, setSelectedVideoIds] = useState<string[]>([])
-  
-  const [recentPlaylists, setRecentPlaylists] = useState<{url: string, title: string}[]>([])
+  const [recentPlaylists, setRecentPlaylists] = useState<{url: string, title: string, data?: PlaylistData}[]>([])
 
   useEffect(() => {
     try {
@@ -36,189 +35,122 @@ export default function PlaylistAnalyzer({ onAnalysisStarted, onShowInfo }: Play
       setIsLoading(true)
       setError(null)
       setApiKeyMissing(false)
-
-      // Notify parent component that analysis has started
-      if (onAnalysisStarted) {
-        onAnalysisStarted()
+      
+      // Check for cached data for instant loading
+      const cached = recentPlaylists.find(p => p.url === url && p.data)
+      if (cached && cached.data) {
+        setPlaylistData(cached.data)
+        setSelectedVideoIds([])
+        if (onAnalysisStarted) onAnalysisStarted()
+        setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }), 100)
+        setIsLoading(false)
+        return
       }
 
-      try {
-        console.log("Starting playlist analysis for:", url)
+      if (onAnalysisStarted) onAnalysisStarted()
 
+      try {
         const response = await fetch("/api/youtube", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ url }),
         })
-
         const data = await response.json()
-
         if (!response.ok) {
-          console.error("API response error:", response.status, data)
-
-          if (
-            data.error === "YouTube API key is not configured" ||
-            data.error?.includes("YouTube API key is not configured")
-          ) {
-            setApiKeyMissing(true)
-          }
-
+          if (data.error?.includes("YouTube API key is not configured")) setApiKeyMissing(true)
           throw new Error(data.error || `Server error (${response.status})`)
         }
-
-        console.log("Analysis completed successfully")
         setPlaylistData(data)
-        setSelectedVideoIds([]) // Reset selection when new analysis starts
-        
-        // Save to recent history
+        setSelectedVideoIds([])
         setRecentPlaylists(prev => {
-          const newRecent = [{ url, title: data.title }, ...prev.filter(p => p.url !== url)].slice(0, 5)
+          const newRecent = [{ url, title: data.title, data }, ...prev.filter(p => p.url !== url)].slice(0, 5)
           try { localStorage.setItem("rapid_play_recent", JSON.stringify(newRecent)) } catch(e) {}
           return newRecent
         })
-
-        // Ensure smooth scrolling to results
-        setTimeout(() => {
-          if (window.scrollY === 0) {
-            window.scrollTo({ top: 1, behavior: "smooth" })
-          }
-        }, 100)
+        setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }), 100)
       } catch (err) {
-        console.error("Error analyzing playlist:", err)
-        const errorMessage = err instanceof Error ? err.message : "Failed to analyze playlist"
-        setError(errorMessage)
+        setError(err instanceof Error ? err.message : "Failed to analyze playlist")
       } finally {
         setIsLoading(false)
       }
     },
-    [onAnalysisStarted],
+    [onAnalysisStarted, recentPlaylists],
   )
 
   const getErrorComponent = () => {
-    if (apiKeyMissing) {
-      return <ApiKeyNotice />
-    }
-
-    if (error) {
-      let errorTitle = "Analysis Failed"
-      let errorSuggestions: string[] = []
-
-      if (error.includes("Invalid YouTube playlist URL")) {
-        errorTitle = "Invalid Playlist URL"
-        errorSuggestions = [
-          "Make sure you're using a YouTube playlist URL",
-          "The URL should contain 'list=' parameter",
-          "Example: https://www.youtube.com/playlist?list=PLxxxxx",
-        ]
-      } else if (error.includes("not found") || error.includes("private")) {
-        errorTitle = "Playlist Not Found"
-        errorSuggestions = [
-          "Check that the playlist URL is correct",
-          "Ensure the playlist is set to 'Public' or 'Unlisted'",
-          "Private playlists cannot be analyzed",
-        ]
-      } else if (error.includes("quota")) {
-        errorTitle = "Service Temporarily Unavailable"
-        errorSuggestions = [
-          "YouTube API quota has been exceeded",
-          "Please try again later",
-          "Contact support if the issue persists",
-        ]
-      } else if (error.includes("empty")) {
-        errorTitle = "Empty Playlist"
-        errorSuggestions = [
-          "This playlist doesn't contain any videos",
-          "All videos might be private or deleted",
-          "Try a different playlist",
-        ]
-      }
-
-      return (
-        <div className="mt-4 p-4 bg-red-900/30 border border-red-700 rounded-xl text-red-200" role="alert">
-          <h3 className="font-semibold text-red-400 mb-2">{errorTitle}</h3>
-          <p className="text-sm mb-3">{error}</p>
-          {errorSuggestions.length > 0 && (
-            <div className="text-xs text-red-300">
-              <p className="font-medium mb-1">Suggestions:</p>
-              <ul className="list-disc list-inside space-y-1">
-                {errorSuggestions.map((suggestion, index) => (
-                  <li key={index}>{suggestion}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-      )
-    }
-
-    return null
+    if (apiKeyMissing) return <ApiKeyNotice />
+    if (!error) return null
+    return (
+      <div className="mt-8 border-2 border-red-600 bg-red-600/10 p-6 flex flex-col items-center">
+        <h3 className="font-bold text-red-500 uppercase tracking-widest mb-2">System Error</h3>
+        <p className="text-red-400 font-mono text-sm text-center">{error}</p>
+      </div>
+    )
   }
 
-  return (
-    <div className="w-full max-w-3xl relative">
-      {playlistData && playlistData.videos.length > 0 && playlistData.videos[0].thumbnails.high?.url && (
-        <div className="fixed inset-0 z-[-10] overflow-hidden pointer-events-none">
-          <div 
-            className="absolute inset-[-100px] transition-opacity duration-1000 opacity-10"
-            style={{
-              backgroundImage: `url(${playlistData.videos[0].thumbnails.high.url})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              filter: 'blur(80px)'
-            }}
-          />
-        </div>
-      )}
-
-      <PlaylistForm onSubmit={handleAnalyzePlaylist} isLoading={isLoading} />
-
-      {!playlistData && recentPlaylists.length > 0 && (
-        <div className="mt-8 space-y-3 animate-fadeIn">
-          <h3 className="text-sm font-medium text-zinc-400 px-1">Recent Playlists</h3>
-          <div className="flex flex-wrap gap-2">
-            {recentPlaylists.map((rp, i) => (
-              <button 
-                key={i}
-                onClick={() => handleAnalyzePlaylist(rp.url)}
-                className="text-xs bg-zinc-800/80 hover:bg-zinc-700 hover:text-white text-zinc-300 border border-zinc-700 px-3 py-1.5 rounded-full transition-colors flex items-center max-w-[200px]"
-              >
-                <span className="truncate">{rp.title}</span>
-              </button>
-            ))}
+  if (!playlistData) {
+    return (
+      <div className="w-full">
+        <PlaylistForm onSubmit={handleAnalyzePlaylist} isLoading={isLoading} />
+        {getErrorComponent()}
+        
+        {recentPlaylists.length > 0 && (
+          <div className="mt-16 border-t border-white/10 pt-8">
+            <h3 className="text-white/40 font-mono text-xs uppercase tracking-widest mb-6">Recent Queries</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              {recentPlaylists.map((rp, i) => (
+                <button 
+                  key={i}
+                  onClick={() => handleAnalyzePlaylist(rp.url)}
+                  className="group flex flex-col text-left border border-white/10 p-4 hover:border-red-600 transition-colors bg-black"
+                >
+                  <span className="text-sm font-bold text-white uppercase tracking-wider truncate w-full mb-2">{rp.title}</span>
+                  <span className="text-[10px] text-red-500 font-mono uppercase">Load Target //</span>
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
+    )
+  }
 
-      {getErrorComponent()}
+  const selectedVideos = playlistData.videos.filter((v) => selectedVideoIds.includes(v.id))
+  const hasSelection = selectedVideoIds.length > 0
 
-      {playlistData && (
-        <div className="mt-6 space-y-6 animate-fadeIn">
-          <PlaylistMetadata data={playlistData} />
+  return (
+    <div className="w-full animate-fadeIn flex flex-col">
+      {/* Header Form Context */}
+      <div className="w-full border-b border-white/10 pb-8 mb-8">
+        <PlaylistForm onSubmit={handleAnalyzePlaylist} isLoading={isLoading} />
+        {getErrorComponent()}
+      </div>
+
+      <div className="w-full">
+        <PlaylistMetadata data={playlistData} />
+      </div>
+
+      <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8 mt-8">
+        <div className="lg:col-span-4 flex flex-col gap-8">
           <PlaybackSpeeds
             totalDuration={playlistData.totalDuration}
-            selectedDuration={
-              selectedVideoIds.length > 0
-                ? playlistData.videos
-                    .filter((v) => selectedVideoIds.includes(v.id))
-                    .reduce((sum, v) => sum + parseDuration(v.duration), 0)
-                : undefined
-            }
+            selectedDuration={hasSelection ? selectedVideos.reduce((sum, v) => sum + parseDuration(v.duration), 0) : undefined}
           />
-          <VideoSelector
-            videos={playlistData.videos}
-            onSelectionChange={setSelectedVideoIds}
-          />
-          {selectedVideoIds.length > 0 && (
+          {hasSelection && (
             <SelectedVideosStats
-              selectedVideos={playlistData.videos.filter((v) => selectedVideoIds.includes(v.id))}
+              selectedVideos={selectedVideos}
               totalDuration={playlistData.totalDuration}
               totalCount={playlistData.videoCount}
             />
           )}
         </div>
-      )}
+        <div className="lg:col-span-8">
+          <VideoSelector
+            videos={playlistData.videos}
+            onSelectionChange={setSelectedVideoIds}
+          />
+        </div>
+      </div>
     </div>
   )
 }

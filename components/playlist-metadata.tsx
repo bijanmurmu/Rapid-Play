@@ -1,46 +1,60 @@
-import { Card, CardContent } from "@/components/ui/card"
-import { formatTime } from "@/lib/utils"
+"use client"
+
+import type React from "react"
 import type { PlaylistData } from "@/lib/youtube-api"
 
 interface PlaylistMetadataProps {
   data: PlaylistData
 }
 
+function formatDuration(seconds: number): string {
+  const hours = Math.floor(seconds / 3600)
+  const minutes = Math.floor((seconds % 3600) / 60)
+  const remainingSeconds = Math.floor(seconds % 60)
+
+  const parts = []
+  if (hours > 0) parts.push(`${hours}h`)
+  if (minutes > 0) parts.push(`${minutes}m`)
+  if (remainingSeconds > 0 || parts.length === 0) parts.push(`${remainingSeconds}s`)
+
+  return parts.join(" ")
+}
+
 export default function PlaylistMetadata({ data }: PlaylistMetadataProps) {
+  const { title, channelTitle, videoCount, unavailableCount, totalDuration } = data
+  const availableCount = videoCount - unavailableCount
+  const averageDuration = availableCount > 0 ? Math.round(totalDuration / availableCount) : 0
+
   return (
-    <Card className="w-full bg-zinc-900/80 backdrop-blur-sm border-zinc-800 shadow-xl overflow-hidden">
-      <CardContent className="p-6">
-        <div className="space-y-4">
-          <h2 className="text-xl font-bold text-white">{data.title}</h2>
+    <div className="w-full border-2 border-white/20 bg-black animate-fadeIn">
+      <div className="border-b-2 border-white/20 p-6 md:p-8">
+        <h2 className="text-2xl md:text-4xl font-black text-white uppercase tracking-tighter mb-2">{title}</h2>
+        <p className="text-white/50 font-mono uppercase tracking-widest text-sm">SOURCE: {channelTitle}</p>
+      </div>
 
-          <div className="grid gap-3">
-            <div className="flex justify-between items-center border-b border-zinc-800 pb-2">
-              <span className="text-zinc-400">Channel</span>
-              <span className="text-white font-medium">{data.channelName}</span>
-            </div>
-
-            <div className="flex justify-between items-center border-b border-zinc-800 pb-2">
-              <span className="text-zinc-400">Videos</span>
-              <span className="text-white font-medium">
-                {data.videoCount} videos
-                {data.unavailableCount > 0 && (
-                  <span className="text-zinc-500 ml-1">({data.unavailableCount} unavailable)</span>
-                )}
-              </span>
-            </div>
-
-            <div className="flex justify-between items-center border-b border-zinc-800 pb-2">
-              <span className="text-zinc-400">Average Length</span>
-              <span className="text-white font-medium font-mono">{data.averageLength}</span>
-            </div>
-
-            <div className="flex justify-between items-center">
-              <span className="text-zinc-400">Total Duration</span>
-              <span className="text-white font-bold font-mono">{formatTime(data.totalDuration)}</span>
-            </div>
-          </div>
+      <div className="grid grid-cols-2 md:grid-cols-4 divide-y-2 md:divide-y-0 md:divide-x-2 divide-white/20">
+        <div className="p-6 flex flex-col justify-center">
+          <p className="text-white/40 text-[10px] font-mono uppercase tracking-widest mb-1">[01] Video Count</p>
+          <p className="text-2xl font-bold text-white font-mono">{videoCount}</p>
         </div>
-      </CardContent>
-    </Card>
+
+        <div className="p-6 flex flex-col justify-center">
+          <p className="text-white/40 text-[10px] font-mono uppercase tracking-widest mb-1">[02] Total Duration</p>
+          <p className="text-2xl font-bold text-white font-mono">{formatDuration(totalDuration)}</p>
+        </div>
+
+        <div className="p-6 flex flex-col justify-center">
+          <p className="text-white/40 text-[10px] font-mono uppercase tracking-widest mb-1">[03] Avg Length</p>
+          <p className="text-2xl font-bold text-white font-mono">{formatDuration(averageDuration)}</p>
+        </div>
+
+        <div className="p-6 flex flex-col justify-center bg-white/5">
+          <p className="text-white/40 text-[10px] font-mono uppercase tracking-widest mb-1">[04] Unavailable</p>
+          <p className={`text-2xl font-bold font-mono ${unavailableCount > 0 ? 'text-red-500' : 'text-white'}`}>
+            {unavailableCount}
+          </p>
+        </div>
+      </div>
+    </div>
   )
 }

@@ -1,17 +1,9 @@
 "use client"
 
 import React, { useState } from "react"
-import { Button } from "@/components/ui/button"
 import type { VideoDetails } from "@/lib/youtube-api"
 import { parseDuration } from "@/lib/youtube-api"
-import { Check, ChevronDown } from "lucide-react"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+import { Search } from "lucide-react"
 
 interface VideoSelectorProps {
   videos: VideoDetails[]
@@ -20,10 +12,7 @@ interface VideoSelectorProps {
 
 export function VideoSelector({ videos, onSelectionChange }: VideoSelectorProps) {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
-  const [isExpanded, setIsExpanded] = useState(false)
-
   const [searchQuery, setSearchQuery] = useState("")
-  const [sortOrder, setSortOrder] = useState<"original" | "shortest" | "longest">("original")
 
   const handleVideoToggle = (videoId: string) => {
     const newSelected = new Set(selectedIds)
@@ -51,161 +40,151 @@ export function VideoSelector({ videos, onSelectionChange }: VideoSelectorProps)
   const availableVideos = videos.filter((v) => !v.unavailable)
   const isAllSelected = availableVideos.length > 0 && selectedIds.size === availableVideos.length
 
-  const filteredAndSortedVideos = [...videos]
-    .filter(video => video.title.toLowerCase().includes(searchQuery.toLowerCase()) || video.channelTitle.toLowerCase().includes(searchQuery.toLowerCase()))
-    .sort((a, b) => {
-      if (sortOrder === "shortest") return parseDuration(a.duration) - parseDuration(b.duration)
-      if (sortOrder === "longest") return parseDuration(b.duration) - parseDuration(a.duration)
-      return 0 // original
-    })
+  const filteredVideos = [...videos].filter(video => 
+    video.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    video.channelTitle.toLowerCase().includes(searchQuery.toLowerCase())
+  )
 
   return (
-    <div className="space-y-4 rounded-lg border border-zinc-800 bg-zinc-900/50 p-4">
-      <button
-        onClick={() => setIsExpanded(!isExpanded)}
-        className="flex w-full items-center justify-between"
-      >
-        <div className="flex items-center gap-2">
-          <h3 className="text-lg font-semibold text-white">Select Videos</h3>
-          <span className="text-sm text-zinc-400">({selectedIds.size} selected)</span>
-        </div>
-        <ChevronDown
-          className={`h-5 w-5 transition-transform text-zinc-400 ${isExpanded ? "rotate-180" : ""}`}
-        />
-      </button>
-
-      {isExpanded && (
-        <>
-          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-            <div className="flex flex-wrap gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleSelectAll}
-                disabled={isAllSelected}
-              >
-                Select All
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleDeselectAll}
-                disabled={selectedIds.size === 0}
-              >
-                Deselect All
-              </Button>
-            </div>
-            
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-              <input
-                type="text"
-                placeholder="Search videos..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full sm:w-48 rounded border border-zinc-700 bg-zinc-800 px-3 py-1 text-sm text-white focus:border-red-500 focus:outline-none"
-              />
-              <Select
-                value={sortOrder}
-                onValueChange={(value: any) => setSortOrder(value)}
-              >
-                <SelectTrigger className="w-full sm:w-[160px] h-8 bg-zinc-800 border-zinc-700 text-white focus:ring-red-500">
-                  <SelectValue placeholder="Sort order" />
-                </SelectTrigger>
-                <SelectContent className="bg-zinc-800 border-zinc-700 text-white">
-                  <SelectItem value="original">Original Order</SelectItem>
-                  <SelectItem value="shortest">Shortest First</SelectItem>
-                  <SelectItem value="longest">Longest First</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+    <div className="w-full border-2 border-white/20 bg-black flex flex-col">
+      {/* Control Bar */}
+      <div className="border-b-2 border-white/20 flex flex-col md:flex-row divide-y-2 md:divide-y-0 md:divide-x-2 divide-white/20">
+        
+        <div className="flex-1 flex bg-black focus-within:bg-white/5 transition-colors relative group">
+          <div className="absolute left-0 bottom-0 w-full h-[2px] bg-red-600 scale-x-0 group-focus-within:scale-x-100 transition-transform origin-left z-10"></div>
+          <div className="flex items-center justify-center px-6 border-r-2 border-white/20">
+            <Search className="h-5 w-5 text-white/50" />
           </div>
+          <input
+            type="text"
+            placeholder="FILTER DATA //"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="flex-1 h-14 bg-transparent border-none text-white px-6 font-mono placeholder:text-white/30 focus:outline-none focus:ring-0 uppercase"
+          />
+        </div>
 
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {filteredAndSortedVideos.map((video, index) => {
-          const isDuplicate = videos.filter(v => v.id === video.id).length > 1;
-          return (
-          <div
-            key={`${video.id}-${index}`}
-            className="group relative overflow-hidden rounded-lg border border-zinc-700 bg-zinc-900 transition-all hover:border-red-600"
+        <div className="flex divide-x-2 divide-white/20">
+          <button
+            onClick={handleSelectAll}
+            disabled={isAllSelected}
+            className="h-14 px-8 bg-black hover:bg-white text-white hover:text-black font-bold uppercase tracking-widest transition-colors disabled:opacity-50 disabled:hover:bg-black disabled:hover:text-white"
           >
-            <input
-              type="checkbox"
-              id={`video-${video.id}-${index}`}
-              checked={selectedIds.has(video.id)}
-              onChange={() => handleVideoToggle(video.id)}
-              disabled={video.unavailable}
-              className="sr-only"
-            />
+            Select All
+          </button>
+          <button
+            onClick={handleDeselectAll}
+            disabled={selectedIds.size === 0}
+            className="h-14 px-8 bg-black hover:bg-red-600 text-white font-bold uppercase tracking-widest transition-colors disabled:opacity-50 disabled:hover:bg-black"
+          >
+            Clear
+          </button>
+        </div>
+      </div>
+
+      {/* Header Row */}
+      <div className="grid grid-cols-[50px_80px_1fr_80px] md:grid-cols-[50px_120px_1fr_200px_100px] gap-0 border-b-2 border-white/20 bg-white/5">
+        <div className="px-4 py-3 text-center border-r-2 border-white/20">
+          <span className="text-[10px] text-red-500 font-mono uppercase tracking-widest font-bold">SEL</span>
+        </div>
+        <div className="px-4 py-3 text-center border-r-2 border-white/20">
+          <span className="text-[10px] text-white/50 font-mono uppercase tracking-widest font-bold">IMG</span>
+        </div>
+        <div className="px-6 py-3 border-r-2 border-white/20">
+          <span className="text-[10px] text-white/50 font-mono uppercase tracking-widest font-bold">Data Subject</span>
+        </div>
+        <div className="px-6 py-3 hidden md:block border-r-2 border-white/20">
+          <span className="text-[10px] text-white/50 font-mono uppercase tracking-widest font-bold">Source</span>
+        </div>
+        <div className="px-4 py-3 text-right">
+          <span className="text-[10px] text-white/50 font-mono uppercase tracking-widest font-bold">Len</span>
+        </div>
+      </div>
+
+      {/* Data Rows */}
+      <div className="flex flex-col divide-y-2 divide-white/20">
+        {filteredVideos.map((video, index) => {
+          const isDuplicate = videos.filter(v => v.id === video.id).length > 1;
+          const isSelected = selectedIds.has(video.id);
+          const thumbnailUrl = video.thumbnails?.default?.url || "";
+          
+          return (
             <label
+              key={`${video.id}-${index}`}
               htmlFor={`video-${video.id}-${index}`}
-              className={`block cursor-pointer p-3 ${video.unavailable ? "opacity-50" : ""}`}
+              className={`grid grid-cols-[50px_80px_1fr_80px] md:grid-cols-[50px_120px_1fr_200px_100px] gap-0 items-stretch cursor-pointer transition-colors ${
+                video.unavailable ? 'opacity-30 bg-red-900/10' : ''
+              } ${
+                isSelected ? 'bg-red-600 text-black hover:bg-red-500' : 'bg-black hover:bg-white/10 text-white'
+              }`}
             >
-              {/* Thumbnail */}
-              <div className="relative mb-2 flex items-center justify-center overflow-hidden rounded bg-zinc-800">
-                {video.thumbnails.medium?.url ? (
-                  <img
-                    src={video.thumbnails.medium.url}
-                    alt={video.title}
-                    className="aspect-video w-full object-cover"
-                  />
-                ) : (
-                  <div className="aspect-video w-full bg-zinc-800" />
-                )}
-                {isDuplicate && !video.unavailable && (
-                  <div className="absolute top-1 right-1 bg-amber-500 text-black text-[10px] font-bold px-1.5 py-0.5 rounded shadow-sm z-10">
-                    DUPLICATE
-                  </div>
-                )}
-                {video.unavailable && (
-                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/80 gap-2 z-10">
-                    <span className="text-xs font-semibold text-zinc-300">Unavailable</span>
-                    <span
-                      onClick={(e) => {
-                        e.preventDefault()
-                        window.open(`https://web.archive.org/web/2/https://www.youtube.com/watch?v=${video.id}`, '_blank')
-                      }}
-                      className="text-[10px] bg-zinc-800 hover:bg-zinc-700 text-white px-2 py-1 rounded cursor-pointer pointer-events-auto"
-                    >
-                      Find on Wayback
-                    </span>
-                  </div>
-                )}
-                {selectedIds.has(video.id) && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-                    <div className="flex h-6 w-6 items-center justify-center rounded border-2 border-red-500 bg-red-600">
-                      <Check className="h-4 w-4 text-white" />
-                    </div>
-                  </div>
-                )}
-                <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
-                  <div className="flex h-6 w-6 items-center justify-center rounded border-2 border-red-500">
-                    {selectedIds.has(video.id) && <Check className="h-4 w-4 text-red-500" />}
-                  </div>
+              <input
+                type="checkbox"
+                id={`video-${video.id}-${index}`}
+                checked={isSelected}
+                onChange={() => handleVideoToggle(video.id)}
+                disabled={video.unavailable}
+                className="sr-only"
+              />
+
+              <div className={`flex items-center justify-center border-r-2 ${isSelected ? 'border-black/20' : 'border-white/20'}`}>
+                <div className={`w-4 h-4 border-2 flex items-center justify-center ${isSelected ? 'border-black bg-black' : 'border-white/30'}`}>
+                  {isSelected && <div className="w-2 h-2 bg-red-600" />}
                 </div>
               </div>
 
-              {/* Video Info */}
-              <div className="space-y-1">
-                <h4 className="line-clamp-2 text-sm font-medium leading-tight text-white">
+              <div className={`p-2 flex items-center justify-center border-r-2 ${isSelected ? 'border-black/20' : 'border-white/20'}`}>
+                {thumbnailUrl ? (
+                  <div className={`relative w-full aspect-video border-2 ${isSelected ? 'border-black/50' : 'border-white/20'} overflow-hidden grayscale contrast-125 transition-all duration-300 ${isSelected ? 'grayscale-0' : 'group-hover:grayscale-0'}`}>
+                    <img src={thumbnailUrl} alt="" className="object-cover w-full h-full" loading="lazy" />
+                  </div>
+                ) : (
+                  <div className={`w-full aspect-video border-2 flex items-center justify-center ${isSelected ? 'border-black/50 bg-black/10' : 'border-white/20 bg-white/5'}`}>
+                    <span className="text-[8px] font-mono opacity-50">NO IMG</span>
+                  </div>
+                )}
+              </div>
+
+              <div className={`px-4 sm:px-6 py-4 min-w-0 border-r-2 ${isSelected ? 'border-black/20' : 'border-white/20'} flex flex-col justify-center`}>
+                <h4 className={`text-sm md:text-base font-bold truncate uppercase tracking-wide ${isSelected ? 'text-black' : 'text-white'}`}>
                   {video.title}
                 </h4>
-                <p className="text-xs text-zinc-400">{video.channelTitle}</p>
-                <p className="text-xs font-medium text-red-500">
-                  {Math.ceil(parseDuration(video.duration) / 60)} min
+                <div>
+                  {video.unavailable && (
+                    <span className="inline-block mt-1 text-[10px] font-mono border border-red-500 text-red-500 px-1 py-0.5 uppercase tracking-widest">
+                      Unavailable
+                    </span>
+                  )}
+                  {isDuplicate && !video.unavailable && (
+                    <span className="inline-block mt-1 text-[10px] font-mono border border-yellow-500 text-yellow-500 px-1 py-0.5 uppercase tracking-widest ml-2">
+                      Duplicate
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              <div className={`px-6 py-4 hidden md:flex flex-col justify-center min-w-0 border-r-2 ${isSelected ? 'border-black/20' : 'border-white/20'}`}>
+                <p className={`text-xs font-mono uppercase truncate ${isSelected ? 'text-black/70' : 'text-white/50'}`}>
+                  {video.channelTitle}
                 </p>
               </div>
+
+              <div className="px-4 py-4 text-right flex flex-col justify-center">
+                <span className={`text-sm md:text-base font-mono font-bold ${isSelected ? 'text-black' : 'text-white'}`}>
+                  {Math.ceil(parseDuration(video.duration) / 60)}<span className={isSelected ? 'text-black/50' : 'text-white/30'}>m</span>
+                </span>
+              </div>
             </label>
-          </div>
           );
         })}
       </div>
 
-          {availableVideos.length === 0 && (
-            <div className="rounded-lg border border-zinc-700 bg-zinc-900 p-8 text-center">
-              <p className="text-zinc-400">No available videos to select</p>
-            </div>
-          )}
-        </>
+      {availableVideos.length === 0 && (
+        <div className="p-16 flex flex-col items-center justify-center text-center">
+          <div className="text-red-500 font-mono text-sm uppercase tracking-widest border border-red-500 p-4">
+            NO DATA MATCHES FILTER PARAMETERS
+          </div>
+        </div>
       )}
     </div>
   )

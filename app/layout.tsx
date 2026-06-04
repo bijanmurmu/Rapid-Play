@@ -53,11 +53,6 @@ export const metadata: Metadata = {
     description: "Analyze YouTube playlists and calculate optimal watch times at different speeds",
     images: ["/og-image.png"],
   },
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 5,
-  },
   robots: {
     index: true,
     follow: true,
@@ -72,6 +67,12 @@ export const metadata: Metadata = {
   category: "Web Application",
   generator: "v0.app",
 }
+export const viewport = {
+  themeColor: "#000000",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+}
 
 export default function RootLayout({
   children,
@@ -81,10 +82,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark scroll-smooth">
       <head>
-        <link
-          rel="icon"
-          href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FF0000'><path d='M8 5v14l11-7z'/><circle cx='4' cy='12' r='2' fill='%23FF4444'/><circle cx='4' cy='6' r='1.5' fill='%23FF6666'/><circle cx='4' cy='18' r='1.5' fill='%23FF6666'/></svg>"
-        />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2" />
         <link rel="canonical" href="https://rapidplay.vercel.app" />
       </head>
       <body style={{ fontFamily }} className="overflow-y-auto overflow-x-hidden">

@@ -4,6 +4,7 @@ import { useState } from "react"
 import PlaylistAnalyzer from "@/components/playlist-analyzer"
 import Layout from "@/components/layout"
 import Script from "next/script"
+import { Clock, BookOpen, Zap, Shield } from "lucide-react"
 
 export default function Home() {
   const [showInfoSections, setShowInfoSections] = useState(true)
@@ -18,118 +19,101 @@ export default function Home() {
 
   return (
     <Layout>
-      <div className="flex flex-col items-center justify-center min-h-[calc(100vh-6rem)]">
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-6 text-center">
-          YouTube Playlist Analyzer & Watch Time Calculator
-        </h1>
-        <p className="text-zinc-400 text-center mb-8 max-w-md">
-          Get detailed insights about playlist duration, video count, and optimal playback speeds to save time
-        </p>
-        <section aria-labelledby="analyzer-section" className="w-full max-w-4xl flex justify-center">
+      <div className="flex flex-col min-h-screen">
+        {showInfoSections && (
+          <header className="w-full border-b-2 border-white/10 pt-20 pb-12 mb-12">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <h1 className="text-4xl sm:text-6xl md:text-8xl font-black text-white uppercase tracking-tighter leading-[0.9]">
+                RAPID PLAY <br />
+                <span className="text-red-600">ANALYZER.</span>
+              </h1>
+              <p className="mt-8 text-xl font-mono text-white/50 max-w-2xl uppercase tracking-widest leading-relaxed">
+                Calculate precise watch times. Optimize playback speed. Extract data instantly.
+              </p>
+            </div>
+          </header>
+        )}
+        
+        <section aria-labelledby="analyzer-section" className="w-full flex justify-center max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <PlaylistAnalyzer onAnalysisStarted={handleAnalysisStarted} onShowInfo={handleShowInfo} />
         </section>
 
         {showInfoSections && (
-          <>
-            <section className="mt-16 max-w-3xl text-center px-4 animate-fadeIn">
-              <h2 className="text-xl sm:text-2xl font-bold text-white mb-4">How It Works</h2>
-              <p className="text-zinc-300 mb-6">
-                Simply paste any public YouTube playlist URL and our tool will analyze it to show you:
-              </p>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
-                <div className="bg-zinc-900/50 p-4 rounded-lg border border-zinc-800">
-                  <h3 className="font-semibold text-white mb-2">Playlist Statistics</h3>
-                  <p className="text-zinc-400 text-sm">
-                    Total videos, unavailable videos, average length, and total duration
-                  </p>
-                </div>
-                <div className="bg-zinc-900/50 p-4 rounded-lg border border-zinc-800">
-                  <h3 className="font-semibold text-white mb-2">Watch Time Calculator</h3>
-                  <p className="text-zinc-400 text-sm">See how much time you'll save by watching at different speeds</p>
-                </div>
-                <div className="bg-zinc-900/50 p-4 rounded-lg border border-zinc-800">
-                  <h3 className="font-semibold text-white mb-2">Custom Speed Options</h3>
-                  <p className="text-zinc-400 text-sm">Calculate watch time for any custom playback speed you prefer</p>
-                </div>
-              </div>
-            </section>
+          <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-32 mb-32 border-t-2 border-white/10 pt-16">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
+              
+              {/* How It Works Block */}
+              <div>
+                <h2 className="text-3xl font-black text-white uppercase tracking-tighter mb-8">System Functions</h2>
+                <div className="space-y-0 border-y border-white/10">
+                  
+                  <div className="group border-b border-white/10 py-6 flex items-start gap-6 hover:bg-white/5 transition-colors">
+                    <div className="font-mono text-red-600 font-bold text-xl">01</div>
+                    <div>
+                      <h3 className="font-bold text-white text-lg uppercase tracking-wider mb-2">Playlist Statistics</h3>
+                      <p className="text-white/60 text-sm font-mono leading-relaxed">
+                        Total videos, unavailable videos, average length, and absolute total duration calculated in milliseconds.
+                      </p>
+                    </div>
+                  </div>
 
-            <section className="mt-16 max-w-3xl text-center px-4 animate-fadeIn">
-              <h2 className="text-xl sm:text-2xl font-bold text-white mb-4">Why Use Rapid Play?</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-left">
-                <div className="flex items-start">
-                  <div className="bg-red-600/20 p-2 rounded-full mr-3">
-                    <svg className="h-5 w-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
+                  <div className="group border-b border-white/10 py-6 flex items-start gap-6 hover:bg-white/5 transition-colors">
+                    <div className="font-mono text-red-600 font-bold text-xl">02</div>
+                    <div>
+                      <h3 className="font-bold text-white text-lg uppercase tracking-wider mb-2">Time Calculator</h3>
+                      <p className="text-white/60 text-sm font-mono leading-relaxed">
+                        Algorithmic projection of time saved across standard and custom playback multipliers.
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-white">Save Time</h3>
-                    <p className="text-zinc-400 text-sm">
-                      Quickly see how much time you'll save by watching at different speeds
-                    </p>
+
+                  <div className="group py-6 flex items-start gap-6 hover:bg-white/5 transition-colors">
+                    <div className="font-mono text-red-600 font-bold text-xl">03</div>
+                    <div>
+                      <h3 className="font-bold text-white text-lg uppercase tracking-wider mb-2">Data Selection</h3>
+                      <p className="text-white/60 text-sm font-mono leading-relaxed">
+                        Isolate specific tracks. Calculate targeted watch times for subsets of large playlists.
+                      </p>
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-start">
-                  <div className="bg-red-600/20 p-2 rounded-full mr-3">
-                    <svg className="h-5 w-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                      />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-white">Plan Your Learning</h3>
-                    <p className="text-zinc-400 text-sm">
-                      Know exactly how long a course or playlist will take to complete
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-start">
-                  <div className="bg-red-600/20 p-2 rounded-full mr-3">
-                    <svg className="h-5 w-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M13 10V3L4 14h7v7l9-11h-7z"
-                      />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-white">Fast & Free</h3>
-                    <p className="text-zinc-400 text-sm">
-                      No sign-up required, instant results, completely free to use
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-start">
-                  <div className="bg-red-600/20 p-2 rounded-full mr-3">
-                    <svg className="h-5 w-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                      />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-white">Privacy Focused</h3>
-                    <p className="text-zinc-400 text-sm">We don't store your playlists or personal information</p>
-                  </div>
+
                 </div>
               </div>
-            </section>
-          </>
+
+              {/* Why Use Block */}
+              <div>
+                <h2 className="text-3xl font-black text-white uppercase tracking-tighter mb-8">Core Advantages</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-px bg-white/10 border border-white/10">
+                  
+                  <div className="bg-black p-8 group hover:bg-white/5 transition-colors">
+                    <Clock className="h-8 w-8 text-red-600 mb-6" strokeWidth={1.5} />
+                    <h3 className="font-bold text-white text-lg uppercase tracking-wider mb-2">Save Time</h3>
+                    <p className="text-white/60 text-sm font-mono leading-relaxed">Exact time-savings calculated instantly.</p>
+                  </div>
+
+                  <div className="bg-black p-8 group hover:bg-white/5 transition-colors">
+                    <BookOpen className="h-8 w-8 text-red-600 mb-6" strokeWidth={1.5} />
+                    <h3 className="font-bold text-white text-lg uppercase tracking-wider mb-2">Plan Learning</h3>
+                    <p className="text-white/60 text-sm font-mono leading-relaxed">Structure educational content consumption.</p>
+                  </div>
+
+                  <div className="bg-black p-8 group hover:bg-white/5 transition-colors">
+                    <Zap className="h-8 w-8 text-red-600 mb-6" strokeWidth={1.5} />
+                    <h3 className="font-bold text-white text-lg uppercase tracking-wider mb-2">Zero Latency</h3>
+                    <p className="text-white/60 text-sm font-mono leading-relaxed">No accounts. No databases. Immediate execution.</p>
+                  </div>
+
+                  <div className="bg-black p-8 group hover:bg-white/5 transition-colors">
+                    <Shield className="h-8 w-8 text-red-600 mb-6" strokeWidth={1.5} />
+                    <h3 className="font-bold text-white text-lg uppercase tracking-wider mb-2">Secure</h3>
+                    <p className="text-white/60 text-sm font-mono leading-relaxed">Zero tracking. Pure client-side calculation.</p>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+          </section>
         )}
       </div>
 
