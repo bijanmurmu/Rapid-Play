@@ -3,7 +3,7 @@
 import React, { useState } from "react"
 import type { VideoDetails } from "@/lib/youtube-api"
 import { parseDuration } from "@/lib/youtube-api"
-import { Search } from "lucide-react"
+import { Search, ExternalLink } from "lucide-react"
 
 interface VideoSelectorProps {
   videos: VideoDetails[]
@@ -83,18 +83,18 @@ export function VideoSelector({ videos, onSelectionChange }: VideoSelectorProps)
       </div>
 
       {/* Header Row */}
-      <div className="grid grid-cols-[50px_80px_1fr_80px] md:grid-cols-[50px_120px_1fr_200px_100px] gap-0 border-b-2 border-white/20 bg-white/5">
+      <div className="grid grid-cols-[50px_50px_80px_1fr_80px] md:grid-cols-[50px_50px_120px_1fr_100px] gap-0 border-b-2 border-white/20 bg-white/5">
         <div className="px-4 py-3 text-center border-r-2 border-white/20">
           <span className="text-[10px] text-red-500 font-mono uppercase tracking-widest font-bold">SEL</span>
+        </div>
+        <div className="px-2 py-3 text-center border-r-2 border-white/20">
+          <span className="text-[10px] text-white/50 font-mono uppercase tracking-widest font-bold">S.NO</span>
         </div>
         <div className="px-4 py-3 text-center border-r-2 border-white/20">
           <span className="text-[10px] text-white/50 font-mono uppercase tracking-widest font-bold">IMG</span>
         </div>
         <div className="px-6 py-3 border-r-2 border-white/20">
           <span className="text-[10px] text-white/50 font-mono uppercase tracking-widest font-bold">Data Subject</span>
-        </div>
-        <div className="px-6 py-3 hidden md:block border-r-2 border-white/20">
-          <span className="text-[10px] text-white/50 font-mono uppercase tracking-widest font-bold">Source</span>
         </div>
         <div className="px-4 py-3 text-right">
           <span className="text-[10px] text-white/50 font-mono uppercase tracking-widest font-bold">Len</span>
@@ -112,7 +112,7 @@ export function VideoSelector({ videos, onSelectionChange }: VideoSelectorProps)
             <label
               key={`${video.id}-${index}`}
               htmlFor={`video-${video.id}-${index}`}
-              className={`grid grid-cols-[50px_80px_1fr_80px] md:grid-cols-[50px_120px_1fr_200px_100px] gap-0 items-stretch cursor-pointer transition-colors ${
+              className={`grid grid-cols-[50px_50px_80px_1fr_80px] md:grid-cols-[50px_50px_120px_1fr_100px] gap-0 items-stretch cursor-pointer transition-colors ${
                 video.unavailable ? 'opacity-30 bg-red-900/10' : ''
               } ${
                 isSelected ? 'bg-red-600 text-black hover:bg-red-500' : 'bg-black hover:bg-white/10 text-white'
@@ -133,10 +133,25 @@ export function VideoSelector({ videos, onSelectionChange }: VideoSelectorProps)
                 </div>
               </div>
 
+              <div className={`flex items-center justify-center border-r-2 ${isSelected ? 'border-black/20' : 'border-white/20'}`}>
+                <span className={`text-xs font-mono font-bold ${isSelected ? 'text-black/70' : 'text-white/50'}`}>
+                  {index + 1}
+                </span>
+              </div>
+
               <div className={`p-2 flex items-center justify-center border-r-2 ${isSelected ? 'border-black/20' : 'border-white/20'}`}>
                 {thumbnailUrl ? (
-                  <div className={`relative w-full aspect-video border-2 ${isSelected ? 'border-black/50' : 'border-white/20'} overflow-hidden grayscale contrast-125 transition-all duration-300 ${isSelected ? 'grayscale-0' : 'group-hover:grayscale-0'}`}>
+                  <div 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      window.open(`https://youtube.com/watch?v=${video.id}`, '_blank');
+                    }}
+                    className={`relative w-full aspect-video border-2 ${isSelected ? 'border-black/50' : 'border-white/20'} overflow-hidden grayscale contrast-125 transition-all duration-300 ${isSelected ? 'grayscale-0' : 'hover:grayscale-0'} cursor-pointer hover:opacity-90 group/thumb`}
+                  >
                     <img src={thumbnailUrl} alt="" className="object-cover w-full h-full" loading="lazy" />
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 group-hover/thumb:opacity-100 transition-opacity duration-200">
+                      <ExternalLink className="w-6 h-6 text-white" />
+                    </div>
                   </div>
                 ) : (
                   <div className={`w-full aspect-video border-2 flex items-center justify-center ${isSelected ? 'border-black/50 bg-black/10' : 'border-white/20 bg-white/5'}`}>
@@ -163,11 +178,7 @@ export function VideoSelector({ videos, onSelectionChange }: VideoSelectorProps)
                 </div>
               </div>
 
-              <div className={`px-6 py-4 hidden md:flex flex-col justify-center min-w-0 border-r-2 ${isSelected ? 'border-black/20' : 'border-white/20'}`}>
-                <p className={`text-xs font-mono uppercase truncate ${isSelected ? 'text-black/70' : 'text-white/50'}`}>
-                  {video.channelTitle}
-                </p>
-              </div>
+
 
               <div className="px-4 py-4 text-right flex flex-col justify-center">
                 <span className={`text-sm md:text-base font-mono font-bold ${isSelected ? 'text-black' : 'text-white'}`}>
