@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   description:
     "Analyze YouTube playlists to get detailed statistics including total duration, video count, and optimal playback times at different speeds. Save time with our free YouTube playlist calculator.",
   keywords: [
+    // Core & Primary
     "YouTube playlist analyzer",
     "playlist duration calculator",
     "YouTube watch time",
@@ -17,6 +18,54 @@ export const metadata: Metadata = {
     "video playlist statistics",
     "YouTube playlist length",
     "optimize YouTube watching",
+    "calculate youtube playlist duration",
+    
+    // Questions / Long-tail
+    "how long is this youtube playlist",
+    "how much time to finish youtube playlist",
+    "what is the total time of youtube playlist",
+    "can you see how long a youtube playlist is",
+    
+    // Misspellings & Variations (The "wrong" but searched ones)
+    "youtub playlist calculator",
+    "youtube playist time",
+    "yt playlist length",
+    "utube playlist analyzer",
+    "youtube speed calc",
+    "play list duration",
+    "youtube time tracking",
+    
+    // Adjacent & Broad Use Cases
+    "youtube study tracker",
+    "youtube binge calculator",
+    "youtube learning time",
+    "course duration calculator",
+    "tutorial length estimator",
+    "study time calculator youtube",
+    "youtube marathon",
+    "video speed controller time",
+    
+    // Tools & Tech terms
+    "free youtube tool",
+    "youtube api calculator",
+    "nextjs youtube app",
+    "playlist data extractor",
+    "youtube stats viewer",
+    
+    // Productivity & Time Management (Broad / Tangential)
+    "productivity time calculator",
+    "time management for video courses",
+    "speed reading for videos",
+    "pomodoro youtube tracker",
+    "efficient video watching",
+    "save time watching youtube",
+    
+    // Random / Niche
+    "podcast length calculator",
+    "audiobook speed calculator",
+    "music playlist duration",
+    "gaming walkthrough time",
+    "youtube series length"
   ],
   authors: [{ name: "Rapid Play" }],
   creator: "Rapid Play Team",
@@ -27,9 +76,6 @@ export const metadata: Metadata = {
     telephone: false,
   },
   metadataBase: new URL("https://rapidplay.vercel.app"),
-  alternates: {
-    canonical: "/",
-  },
   openGraph: {
     title: "Rapid Play - YouTube Playlist Analyzer | Calculate Watch Times",
     description:
@@ -38,20 +84,11 @@ export const metadata: Metadata = {
     url: "https://rapidplay.vercel.app",
     siteName: "Rapid Play",
     locale: "en_US",
-    images: [
-      {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "Rapid Play - YouTube Playlist Analyzer",
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Rapid Play - YouTube Playlist Analyzer | Calculate Watch Times",
     description: "Analyze YouTube playlists and calculate optimal watch times at different speeds",
-    images: ["/og-image.png"],
   },
   robots: {
     index: true,
@@ -83,7 +120,6 @@ export default function RootLayout({
     <html lang="en" className="dark scroll-smooth">
       <head>
         <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2" />
-        <link rel="canonical" href="https://rapidplay.vercel.app" />
       </head>
       <body style={{ fontFamily }} className="overflow-y-auto overflow-x-hidden">
         {children}

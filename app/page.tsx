@@ -115,6 +115,38 @@ export default function Home() {
             </div>
           </section>
         )}
+
+        {/* SEO Text Content Block */}
+        {showInfoSections && (
+          <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-32 border-t-2 border-white/10 pt-16">
+            <div className="max-w-4xl">
+              <h2 className="text-3xl font-black text-white uppercase tracking-tighter mb-8">Mastering Your Video Time</h2>
+              
+              <div className="space-y-12">
+                <div>
+                  <h3 className="text-xl font-bold text-red-600 uppercase tracking-wider mb-4">What is a YouTube Playlist Analyzer?</h3>
+                  <p className="text-white/70 font-mono leading-relaxed text-sm">
+                    A YouTube playlist analyzer is a specialized tool designed to calculate the exact duration of multiple videos grouped together. When you have a massive course, a tutorial series, or a music playlist, YouTube doesn't natively tell you the total runtime. Our calculator extracts the metadata from the playlist URL, excludes any hidden or deleted videos, and gives you the absolute total watch time down to the second. This takes the guesswork out of your viewing schedule.
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="text-xl font-bold text-red-600 uppercase tracking-wider mb-4">How Does Playback Speed Affect Study Time?</h3>
+                  <p className="text-white/70 font-mono leading-relaxed text-sm">
+                    Many students and professionals use playback speed controllers to consume educational content faster. Watching a 10-hour course at 1.5x speed doesn't just save a few minutes; it reduces the total time to roughly 6 hours and 40 minutes. By calculating your youtube playlist duration at custom speeds (1.25x, 1.5x, 1.75x, and 2x), you can perfectly plan your study sessions, pomodoro timers, and learning marathons with mathematical precision.
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="text-xl font-bold text-red-600 uppercase tracking-wider mb-4">Why Calculate Your YouTube Watch Time?</h3>
+                  <p className="text-white/70 font-mono leading-relaxed text-sm">
+                    Time management is critical for productivity. Whether you want to know how long is this youtube playlist to finish it over the weekend, or you need a course duration calculator to pace your semester, knowing the exact time commitment allows you to be an efficient video watcher. Instead of blindly starting a playlist and hoping you have enough time, you can now structure your learning time and save hours of your life watching youtube content effectively.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
       </div>
 
       {/* JSON-LD Structured Data */}
@@ -122,33 +154,65 @@ export default function Home() {
         id="structured-data"
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebApplication",
-            name: "Rapid Play - YouTube Playlist Analyzer",
-            url: "https://rapidplay.vercel.app",
-            description:
-              "Analyze YouTube playlists to get detailed statistics including total duration, video count, and playback times at different speeds.",
-            applicationCategory: "UtilityApplication",
-            operatingSystem: "Any",
-            offers: {
-              "@type": "Offer",
-              price: "0",
-              priceCurrency: "USD",
+          __html: JSON.stringify([
+            {
+              "@context": "https://schema.org",
+              "@type": "WebApplication",
+              name: "Rapid Play - YouTube Playlist Analyzer",
+              url: "https://rapidplay.vercel.app",
+              description:
+                "Analyze YouTube playlists to get detailed statistics including total duration, video count, and playback times at different speeds.",
+              applicationCategory: "UtilityApplication",
+              operatingSystem: "Any",
+              offers: {
+                "@type": "Offer",
+                price: "0",
+                priceCurrency: "USD",
+              },
+              featureList: [
+                "YouTube playlist analysis",
+                "Video count statistics",
+                "Total duration calculation",
+                "Playback speed time calculation",
+                "Custom speed options",
+              ],
+              screenshot: "https://rapidplay.vercel.app/og-image.png",
+              creator: {
+                "@type": "Organization",
+                name: "Rapid Play Team",
+              },
             },
-            featureList: [
-              "YouTube playlist analysis",
-              "Video count statistics",
-              "Total duration calculation",
-              "Playback speed time calculation",
-              "Custom speed options",
-            ],
-            screenshot: "https://rapidplay.vercel.app/og-image.png",
-            creator: {
-              "@type": "Organization",
-              name: "Rapid Play Team",
-            },
-          }),
+            {
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              mainEntity: [
+                {
+                  "@type": "Question",
+                  name: "How do I calculate the length of a YouTube playlist?",
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Simply paste the YouTube playlist URL into Rapid Play. The analyzer will instantly calculate the total duration, total video count, and show you exactly how much time it takes to watch at 1.25x, 1.5x, 1.75x, and 2x speeds."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  name: "Can I calculate the time for only specific videos in a playlist?",
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Yes, Rapid Play allows you to input a custom range (e.g., videos 1 to 10) so you only calculate the watch time for the specific sections you plan to watch."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  name: "Does it count unavailable or deleted videos?",
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "No. The system automatically detects unavailable, hidden, or deleted videos and excludes them from the total watch time calculation to give you a 100% accurate duration."
+                  }
+                }
+              ]
+            }
+          ]),
         }}
       />
     </Layout>
